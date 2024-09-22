@@ -1,0 +1,6 @@
+
+Composite: When I open epam homepage
+Given I am on main application page
+When I wait until element located by `className(header__logo-container)` appears
+Then `${current-page-url}` is equal to `https://www.epam.com/`
+Then page title is equal to `EPAM | Software Engineering & Product Development Services`
