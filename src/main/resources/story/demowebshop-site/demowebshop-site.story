@@ -1,36 +1,68 @@
-Meta:
-    @group Training
-    @requirementId MyTask-0007
+Scenario: Verify that allows register a User
+Given I am on main application page
+When I click on element located by `className(ico-register)`
+When I click on element located by `#{anyOf(id(gender-male), id(gender-female))}`
+When I add `#{generate(Name.firstName)}` to field located by `id(FirstName)`
+When I add `#{generate(Name.lastName)}` to field located by `id(LastName)`
+When I add `#{generate(Internet.emailAddress)}` to field located by `id(Email)`
+When I add `${passwordUs1}` to field located by `id(Password)`
+When I add `${passwordUs1}` to field located by `id(ConfirmPassword)`
+When I click on element located by `id(register-button)`
+Then `${current-page-url}` is equal to `https://demowebshop.tricentis.com/registerresult/1`
+Then text `Your registration completed` exists
+When I click on element located by `className(ico-logout)`
+
+Scenario: Verify that allows login a User
+Given I am on main application page
+When I click on element located by `className(ico-login)`
+When I add `${emailUs1}` to field located by `id(Email)`
+When I add `${passwordUs1}` to field located by `id(Password)`
+When I click on element located by `className(login-button)`
+Then text `${emailUs1}` exists
+
+Scenario: Verify that ‘Computers’ group has 3 sub-groups with correct names
+Given I am on page with URL `https://demowebshop.tricentis.com/computers`
+Then number of elements found by `className(sub-category-item)` is = `3`
+
+Scenario: Verify that allows sorting items (different options)
+Given I am on page with URL `https://demowebshop.tricentis.com/desktops`
+Then dropdown located by `id(products-orderby)` contains options:
+|value				|state	|
+|Position 			|true	|
+|Name: A to Z		|false	|
+|Name: Z to A		|false	|
+|Price: Low to High	|false	|
+|Price: High to Low	|false	|
+|Created on			|false	|
+
+Scenario: Verify that allows sorting items (different options)
+Given I am on page with URL `https://demowebshop.tricentis.com/desktops`
+When I select `4` in dropdown located by `id(products-pagesize)`
+Then number of elements found by `className(item-box)` is = `4`
+
+Scenario: Verify that allows sorting items (different options)
+Given I am on page with URL `https://demowebshop.tricentis.com/smartphone`
+When I click on element located by `id(add-to-wishlist-button-43)`
+Then text `The product has been added to your ` exists
+When I click on element located by `xpath(//span[@class='cart-label' and text()='Wishlist'])`
+When I click on element located by `xpath(//tbody//a[@href='/smartphone'])`
+Then `${current-page-url}` is equal to `https://demowebshop.tricentis.com/smartphone`
+
+Scenario: Verify that allows adding an item to the cart
+Given I am on page with URL `https://demowebshop.tricentis.com/141-inch-laptop`
+When I click on element located by `id(add-to-cart-button-31)`
+Then text `The product has been added to your ` exists
+When I click on element located by `xpath(//span[@class='cart-label' and text()='Shopping cart'])`
+When I click on element located by `xpath(//tbody//a[@href='/141-inch-laptop'])`
+Then `${current-page-url}` is equal to `https://demowebshop.tricentis.com/141-inch-laptop`
+
+Scenario: Verify that allows removing an item from the cart
+Given I am on page with URL `https://demowebshop.tricentis.com/cart`
+When I click on element located by `name(removefromcart)`
+When I click on element located by `name(updatecart)`
+Then text `14.1-inch Laptop` does not exist
+
+Scenario: Verify that allows checkout an item 
+Given I am on page with URL `https://demowebshop.tricentis.com/cart`
 
 
-Scenario: Navigate to the website homepage
-When I make screenshot on main application page
-
-Scenario: Log In
-When I Log in with `${swagGoodUserName}` and `${swagPassword}` creds
-
-Scenario: Add item to the shopping cart
-Given I am on page with URL `https://www.saucedemo.com/inventory.html`
-When I wait until element located by `<itemPageId>` has text matching `<itemName>`
-When I click on element located by `<addToCartButtonId>`
-Examples:
-|itemName			|itemPageId										|addToCartButtonId					|
-|Sauce Labs Backpack|xpath((//div[@class='inventory_item_name'])[1])|id(add-to-cart-sauce-labs-backpack)|
-
-Scenario: Populate checkout data
-Given I am on page with URL `https://www.saucedemo.com/inventory.html`
-When I click on element located by `className(shopping_cart_link)`
-When I click on element located by `id(checkout)`
-Given I am on page with URL `https://www.saucedemo.com/checkout-step-one.html`
-When I enter `#{anyOf(#{generate(Name.firstName)}, #{generate(Name.lastName)})}` in field located by `id(first-name)`
-When I enter `#{generate(regexify '[a-zA-Z]{10}')}` in field located by `id(last-name)`
-When I enter `#{generate(regexify '[A-Z]{3}-[0-9]{5}')}` in field located by `id(postal-code)`
-When I take screenshot
-When I click on element located by `id(continue)`
-
-Scenario: Complete checkout process
-When I click on element located by `id(finish)`
-Given I am on page with URL `https://www.saucedemo.com/checkout-complete.html`
-When I save `innerText` attribute value of element located by `className(complete-header)` to scenario variable `tyMessage`
-Given I initialize scenario variable `messageTxt` with value `#{loadResource(/data/message.txt)}`
-Then `${tyMessage}` is = `${messageTxt}`
