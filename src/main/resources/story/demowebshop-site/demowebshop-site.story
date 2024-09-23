@@ -27,13 +27,13 @@ Then number of elements found by `className(sub-category-item)` is = `3`
 Scenario: Verify that allows sorting items (different options)
 Given I am on page with URL `https://demowebshop.tricentis.com/desktops`
 Then dropdown located by `id(products-orderby)` contains options:
-|value				|state	|
-|Position 			|true	|
-|Name: A to Z		|false	|
-|Name: Z to A		|false	|
-|Price: Low to High	|false	|
-|Price: High to Low	|false	|
-|Created on			|false	|
+|state	|item				|
+|true	|Position 			|
+|false	|Name: A to Z		|
+|false	|Name: Z to A		|
+|false	|Price: Low to High	|
+|false	|Price: High to Low	|
+|false	|Created on			|
 
 Scenario: Verify that allows sorting items (different options)
 Given I am on page with URL `https://demowebshop.tricentis.com/desktops`
@@ -62,7 +62,12 @@ When I click on element located by `name(removefromcart)`
 When I click on element located by `name(updatecart)`
 Then text `14.1-inch Laptop` does not exist
 
-Scenario: Verify that allows checkout an item 
+Scenario: Verify that allows checkout an item
+Given I am on page with URL `https://demowebshop.tricentis.com/141-inch-laptop`
+When I click on element located by `id(add-to-cart-button-31)`
+Then text `The product has been added to your ` exists
 Given I am on page with URL `https://demowebshop.tricentis.com/cart`
-
-
+When I select `Ukraine` in dropdown located by `id(CountryId)`
+When I add `${Address.zipCode}` to field located by `id(ZipPostalCode)`
+When I click on element located by `id(termsofservice)`
+When I click on element located by `id(checkout)`
