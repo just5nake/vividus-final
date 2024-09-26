@@ -26,16 +26,16 @@ Scenario: Verify that allows adding a new Pet
 When I set request headers:
 |name			|value							|
 |Content-Type	|application/json; charset=UTF-8|
-Given request body: {"id": 0, "category": {"id": 0, "name": "#{generate(Dog.breed)}"}, "name": "#{generate(Dog.name)}", "photoUrls": ["#{generate(Internet.url)}"], "tags": [{"id": 0, "name": "#{generate(Photography.imageTag)}"}], "status": "available"}
+Given request body: {"id": 11111, "category": {"id": 0, "name": "#{generate(Dog.breed)}"}, "name": "#{generate(Dog.name)}", "photoUrls": ["#{generate(Internet.url)}"], "tags": [{"id": 0, "name": "#{generate(Photography.imageTag)}"}], "status": "available"}
 When I execute HTTP POST request for resource with relative URL `/v2/pet`
 Then response code is equal to `200`
 
 Scenario: Verify that allows updating Pet’s image
 When I set request headers:
-|name			|value							|
-|Content-Type	|application/json; charset=UTF-8|
-Given request body: {"file": "/resource/puppy.jpg"}
-When I execute HTTP POST request for resource with relative URL `/v2/pet/9223372036854776000/uploadImage`
+|name			|value								|
+|Content-Type	|multipart/form-data; charset=UTF-8	|
+Given request body: {"file": "src/main/resources/data/puppy.jpg", "type": "image/jpeg"}
+When I execute HTTP POST request for resource with relative URL `/v2/pet/11111/uploadImage`
 Then response code is equal to `200`
 
 Scenario: Verify that allows updating Pet’s name and status
@@ -46,9 +46,10 @@ Given request body: {"id": 0, "category": {"id": 0, "name": "#{generate(Dog.bree
 When I execute HTTP PUT request for resource with relative URL `/v2/pet`
 Then response code is equal to `200`
 
+Scenario: Verify that allows deleting Pet
 When I set request headers:
 |name			|value							|
 |Content-Type	|application/json; charset=UTF-8|
-Given request body: {"api_key": special-key}
-When I execute HTTP DELETE request for resource with relative URL `/v2/pet/9223372036854776000`
+Given request body: {"file": "/resource/puppy.jpg"}
+When I execute HTTP DELETE request for resource with relative URL `/v2/pet/11111`
 Then response code is equal to `200`
